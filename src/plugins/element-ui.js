@@ -13,7 +13,15 @@ import {
   Aside,
   Breadcrumb,
   BreadcrumbItem,
-  Message
+  Message,
+  Form,
+  FormItem,
+  Tabs,
+  TabPane,
+  Input,
+  Button,
+  MessageBox,
+  Dialog
 } from 'element-ui'
 
 Vue.component(Header.name, Header)
@@ -29,4 +37,12 @@ Vue.component(Container.name, Container)
 Vue.component(Aside.name, Aside)
 Vue.component(Breadcrumb.name, Breadcrumb)
 Vue.component(BreadcrumbItem.name, BreadcrumbItem)
+Vue.component(Form.name, Form)
+Vue.component(FormItem.name, FormItem)
+Vue.component(Tabs.name, Tabs)
+Vue.component(TabPane.name, TabPane)
+Vue.component(Input.name, Input)
+Vue.component(Button.name, Button)
+Vue.component(Dialog.name, Dialog)
 Vue.prototype.$message = Message
+Vue.prototype.$confirm = MessageBox.confirm

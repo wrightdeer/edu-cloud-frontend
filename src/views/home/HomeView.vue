@@ -43,12 +43,46 @@
           <router-view></router-view>
         </transition>
     </el-main>
+    <!-- 修改密码对话框 -->
+    <el-dialog title="修改密码" :visible.sync="changePasswordDialogVisible" width="30%">
+      <el-form :model="changePasswordForm" :rules="changePasswordRules" ref="changePasswordForm" size="mini">
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="changePasswordForm.email" placeholder="请输入邮箱"></el-input>
+        </el-form-item>
+        <el-form-item label="图片验证码" prop="captcha">
+          <el-input v-model="changePasswordForm.captcha" placeholder="请输入图片验证码">
+            <template #append>
+              <img v-if="!isSendingEmailCaptcha" :src="captchaUrl" style="width: 60px; height: 20px;" @click="refreshCaptcha" alt="captcha" />
+              <el-button v-else type="info" @click="refreshCaptcha" style="width: 100px; height: 40px;">点击刷新</el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="邮箱验证码" prop="emailCaptcha">
+          <el-input v-model="changePasswordForm.emailCaptcha" placeholder="请输入邮箱验证码">
+            <template #append>
+              <el-button :disabled="isSendingEmailCaptcha || emailCaptchaCountdown > 0 || !changePasswordForm.email || !changePasswordForm.captcha" @click="sendEmailCaptcha">{{ isSendingEmailCaptcha ? '发送中...' : emailCaptchaCountdown > 0 ? `${emailCaptchaCountdown}秒后重试` : '发送验证码' }}</el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPassword">
+          <el-input type="password" v-model="changePasswordForm.newPassword" placeholder="请输入新密码"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="confirmPassword">
+          <el-input type="password" v-model="changePasswordForm.confirmPassword" placeholder="请确认新密码"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleChangePassword" :disabled="!changePasswordForm.email || !changePasswordForm.emailCaptcha || !changePasswordForm.newPassword || !changePasswordForm.confirmPassword">修改密码</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-// import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
+import { removeToken } from '@/utils/storage'
 import request from '@/utils/request'
+import axios from 'axios'
 export default {
   data () {
     return {
@@ -72,24 +106,145 @@ export default {
           icon: 'el-icon-s-custom'
         }
       ],
-      userInfo: {
-        id: '',
+      changePasswordDialogVisible: false,
+      changePasswordForm: {
         email: '',
-        name: '',
-        avatar: '',
-        sex: null,
-        phone: ''
-      }
+        captcha: '',
+        emailCaptcha: '',
+        newPassword: '',
+        confirmPassword: ''
+      },
+      changePasswordRules: {
+        email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
+        captcha: [{ required: true, message: '请输入图片验证码', trigger: 'blur' }],
+        emailCaptcha: [{ required: true, message: '请输入邮箱验证码', trigger: 'blur' }],
+        newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
+        confirmPassword: [{ required: true, message: '请确认新密码', trigger: 'blur' }]
+      },
+      captchaUrl: '/api/captcha',
+      isSendingEmailCaptcha: false,
+      emailCaptchaCountdown: 0,
+      captchaId: ''
     }
   },
-  // computed: {
-  //   ...mapState(['userInfo'])
-  // }
+  methods: {
+    ...mapMutations(['setUserInfo']),
+    handleSelect (key, keyPath) {
+      console.log(key, keyPath)
+    },
+    handleCommand (command) {
+      if (command === 'logout') {
+        this.$confirm('确认退出登录吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          request.post('/user/logout').then(() => {
+            this.setUserInfo({
+              id: '',
+              name: '',
+              avatar: ''
+            })
+            this.$router.push('/login')
+            removeToken()
+          })
+        }).catch(() => {})
+      } else if (command === 'changePassword') {
+        this.changePasswordDialogVisible = true
+        this.fetchCaptchaImage()
+        // 重置表单状态
+        this.$refs.changePasswordForm.resetFields()
+      }
+    },
+    fetchCaptchaImage () {
+      axios.get('/api/user/captcha-image', { responseType: 'blob' })
+        .then(response => {
+          if (response.data.type === 'application/json') {
+            console.error('获取验证码图片失败')
+            this.captchaUrl = require('@/assets/imgs/captcha.png') // 使用本地静态图片代替
+          } else {
+            const url = window.URL.createObjectURL(new Blob([response.data]))
+            this.captchaUrl = url
+          }
+          this.captchaId = response.headers.cookie.split(';')[0]
+          console.log(response.data)
+        })
+        .catch(error => {
+          console.error('获取验证码图片失败', error)
+          this.captchaUrl = require('@/assets/imgs/captcha.png') // 使用本地静态图片代替
+        })
+    },
+    refreshCaptcha () {
+      this.fetchCaptchaImage()
+    },
+    sendEmailCaptcha () {
+      if (!this.changePasswordForm.email || !this.changePasswordForm.captcha) {
+        this.$message.error('请输入邮箱和图片验证码')
+        return
+      }
+      this.isSendingEmailCaptcha = true
+      request.post('/user/send-email-captcha', {
+        email: this.changePasswordForm.email,
+        captcha: this.changePasswordForm.captcha,
+        captchaId: this.captchaId
+      })
+        .then(response => {
+          this.$message.success('验证码发送成功，请查收邮件')
+          this.startEmailCaptchaCountdown()
+        })
+        .catch(error => {
+          this.$message.error(error.message)
+        })
+        .finally(() => {
+          this.isSendingEmailCaptcha = false
+        })
+    },
+    startEmailCaptchaCountdown () {
+      this.emailCaptchaCountdown = 60
+      const interval = setInterval(() => {
+        if (this.emailCaptchaCountdown > 0) {
+          this.emailCaptchaCountdown--
+        } else {
+          clearInterval(interval)
+        }
+      }, 1000)
+    },
+    handleChangePassword () {
+      this.$refs.changePasswordForm.validate((valid) => {
+        if (valid) {
+          if (this.changePasswordForm.newPassword !== this.changePasswordForm.confirmPassword) {
+            this.$message.error('两次输入的密码不一致')
+            return
+          }
+          request.post('/user/password', {
+            email: this.changePasswordForm.email,
+            emailCaptcha: this.changePasswordForm.emailCaptcha,
+            password: this.changePasswordForm.newPassword
+          })
+            .then(response => {
+              this.$message.success('密码修改成功')
+              this.changePasswordDialogVisible = false
+            })
+            .catch(error => {
+              this.$message.error(error.message)
+            })
+        } else {
+          console.log('修改密码验证失败')
+        }
+      })
+    }
+  },
+  computed: {
+    ...mapState(['userInfo'])
+  },
   created: async function () {
-    try {
-      this.userInfo = await request.get('/user/info')
-      console.log(this.userInfo)
-    } catch (err) { this.$message.error(err) }
+    console.log('userInfo', this.userInfo)
+    if (this.userInfo === {} || this.userInfo.id === null || this.userInfo.id === '') {
+      try {
+        this.setUserInfo(await request.get('/user/info'))
+        console.log(this.userInfo)
+      } catch (err) { this.$message.error(err) }
+    }
   }
 }
 </script>
