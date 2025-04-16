@@ -10,7 +10,14 @@
       </el-breadcrumb>
     </el-header>
     <el-container>
-      <el-aside width="200px">Aside</el-aside>
+      <el-aside width="200px">
+        <div>aside</div>
+        <div>aside</div>
+        <div>aside</div>
+        <div>aside</div>
+        <div>aside</div>
+
+      </el-aside>
       <el-main>
         <router-view></router-view>
       </el-main>
@@ -40,6 +47,9 @@ export default {
 </script>
 
 <style scoped>
+.el-container {
+  height: 100%;
+}
 .el-header {
   display: flex;
   justify-content: start;
@@ -60,6 +70,10 @@ export default {
   background-color: #d3dce6;
   color: #333;
   text-align: center;
-  line-height: 469px;
+  display: flex; /* 使用 Flexbox 布局 */
+  flex-direction: column; /* 垂直排列子元素 */
+  justify-content: start; /* 内容垂直居中 */
+  align-items: center; /* 内容水平居中 */
+  padding: 30px; /* 添加内边距 */
 }
 </style>

@@ -21,7 +21,13 @@ import {
   Input,
   Button,
   MessageBox,
-  Dialog
+  Dialog,
+  Select,
+  Option,
+  Upload,
+  Radio,
+  RadioGroup,
+  RadioButton
 } from 'element-ui'
 
 Vue.component(Header.name, Header)
@@ -44,5 +50,11 @@ Vue.component(TabPane.name, TabPane)
 Vue.component(Input.name, Input)
 Vue.component(Button.name, Button)
 Vue.component(Dialog.name, Dialog)
+Vue.component(Select.name, Select)
+Vue.component(Option.name, Option)
+Vue.component(Upload.name, Upload)
+Vue.component(Radio.name, Radio)
+Vue.component(RadioGroup.name, RadioGroup)
+Vue.component(RadioButton.name, RadioButton)
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
