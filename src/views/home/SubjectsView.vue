@@ -32,7 +32,6 @@
         @click="getLink(subject.id)"
       />
     </el-main>
-    <!-- 添加对话框组件 -->
     <el-dialog title="编辑科目" :visible.sync="dialogVisible" width="30%">
       <el-input v-model="editedSubject.name" placeholder="请输入新科目名"></el-input>
       <span slot="footer" class="dialog-footer">

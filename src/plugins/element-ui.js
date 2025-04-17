@@ -31,7 +31,12 @@ import {
   Tag,
   Card,
   Tooltip,
-  Loading
+  Loading,
+  Pagination,
+  Collapse,
+  CollapseItem,
+  Divider,
+  Empty
 } from 'element-ui'
 
 Vue.component(Header.name, Header)
@@ -63,6 +68,11 @@ Vue.component(RadioButton.name, RadioButton)
 Vue.component(Tag.name, Tag)
 Vue.component(Card.name, Card)
 Vue.component(Tooltip.name, Tooltip)
+Vue.component(Pagination.name, Pagination)
+Vue.component(Collapse.name, Collapse)
+Vue.component(CollapseItem.name, CollapseItem)
+Vue.component(Divider.name, Divider)
+Vue.component(Empty.name, Empty)
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.$loading = Loading.service
