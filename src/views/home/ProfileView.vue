@@ -89,6 +89,9 @@ export default {
     handleAvatarSuccess (res) {
       this.displayUserInfo.avatar = res.data.url
     }
+  },
+  mounted () {
+    document.title = `${this.userInfo.name}的个人空间`
   }
 }
 </script>

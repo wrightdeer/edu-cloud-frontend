@@ -241,8 +241,8 @@ export default {
     console.log('userInfo', this.userInfo)
     if (this.userInfo === {} || this.userInfo.id === null || this.userInfo.id === '') {
       try {
-        this.setUserInfo(await request.get('/user/info'))
-        console.log(this.userInfo)
+        const res = await request.get('/user/info')
+        this.setUserInfo(res.data)
       } catch (err) { this.$message.error(err) }
     }
   }
@@ -291,9 +291,9 @@ export default {
   color: #ffd04b;
 }
 .el-main {
-  margin: 20px;
+  margin: 0px 20px 20px 20px;
   padding: 0;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 100px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
 }
 /* 过渡效果样式 */

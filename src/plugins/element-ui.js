@@ -27,7 +27,11 @@ import {
   Upload,
   Radio,
   RadioGroup,
-  RadioButton
+  RadioButton,
+  Tag,
+  Card,
+  Tooltip,
+  Loading
 } from 'element-ui'
 
 Vue.component(Header.name, Header)
@@ -56,5 +60,9 @@ Vue.component(Upload.name, Upload)
 Vue.component(Radio.name, Radio)
 Vue.component(RadioGroup.name, RadioGroup)
 Vue.component(RadioButton.name, RadioButton)
+Vue.component(Tag.name, Tag)
+Vue.component(Card.name, Card)
+Vue.component(Tooltip.name, Tooltip)
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
+Vue.prototype.$loading = Loading.service
