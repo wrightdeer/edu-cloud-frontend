@@ -93,7 +93,6 @@ export default {
             this.captchaUrl = url
           }
           this.captchaId = response.headers.cookie.split(';')[0]
-          console.log(response.data)
         })
         .catch(error => {
           console.error('获取验证码图片失败', error)
@@ -136,7 +135,6 @@ export default {
       }, 1000)
     },
     handlePasswordLogin () {
-      console.log('密码登录验证开始')
       this.$refs.passwordForm.validate((valid) => {
         if (valid) {
           request.post('/user/login/password', {
@@ -151,7 +149,7 @@ export default {
               this.$message.error(error.message)
             })
         } else {
-          console.log('密码登录验证失败')
+          this.$message.error('密码登录验证失败')
         }
       })
     },
@@ -170,7 +168,7 @@ export default {
               this.$message.error(error.message)
             })
         } else {
-          console.log('验证码登录验证失败')
+          this.$message.error('验证码登录验证失败')
         }
       })
     }

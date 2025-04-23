@@ -1,0 +1,18 @@
+[
+    { "code": 0, "name": "Markdown" },
+    { "code": 1, "name": "CSV" },
+    { "code": 2, "name": "C" },
+    { "code": 3, "name": "C++" },
+    { "code": 4, "name": "C/C++" },
+    { "code": 5, "name": "C#" },
+    { "code": 6, "name": "Python" },
+    { "code": 7, "name": "Java" },
+    { "code": 8, "name": "SQL" },
+    { "code": 9, "name": "Shell" },
+    { "code": 10, "name": "PHP" },
+    { "code": 11, "name": "JavaScript" },
+    { "code": 12, "name": "JSON" },
+    { "code": 13, "name": "XML" },
+    { "code": 14, "name": "HTML" },
+    { "code": 15, "name": "CSS" }
+  ]

@@ -5,7 +5,6 @@
         :default-active="activeIndex2"
         class="el-menu-demo"
         mode="horizontal"
-        @select="handleSelect"
         background-color="#545c64"
         text-color="#fff"
       >
@@ -130,7 +129,6 @@ export default {
   methods: {
     ...mapMutations(['setUserInfo']),
     handleSelect (key, keyPath) {
-      console.log(key, keyPath)
     },
     handleCommand (command) {
       if (command === 'logout') {
@@ -167,7 +165,6 @@ export default {
             this.captchaUrl = url
           }
           this.captchaId = response.headers.cookie.split(';')[0]
-          console.log(response.data)
         })
         .catch(error => {
           console.error('获取验证码图片失败', error)
@@ -229,7 +226,7 @@ export default {
               this.$message.error(error.message)
             })
         } else {
-          console.log('修改密码验证失败')
+          this.$message.error('修改密码验证失败')
         }
       })
     }
@@ -238,7 +235,6 @@ export default {
     ...mapState(['userInfo'])
   },
   created: async function () {
-    console.log('userInfo', this.userInfo)
     if (this.userInfo === {} || this.userInfo.id === null || this.userInfo.id === '') {
       try {
         const res = await request.get('/user/info')

@@ -121,7 +121,6 @@ export default {
     await this.requireSubjects()
   },
   mounted () {
-    document.title = '科目分类'
   }
 }
 </script>

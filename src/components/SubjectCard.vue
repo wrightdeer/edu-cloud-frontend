@@ -1,5 +1,5 @@
 <template>
-  <el-card class="subject-card" @click.native="handClick" >
+  <el-card class="subject-card" @click.native="handClick" shadow="hover">
     <div class="card-header">
       <span class="card-title">{{ subject.name }}</span>
       <el-dropdown @command="handleCommand" trigger="hover">
@@ -31,6 +31,7 @@
 <script>
 import { mapState } from 'vuex'
 import moment from 'moment'
+import { formattedTime } from '@/utils/calcTime'
 
 export default {
   props: {
@@ -73,24 +74,7 @@ export default {
       return ''
     },
     formattedCreateTime () {
-      const createTime = moment(this.subject.createTime)
-      const now = moment()
-      const diffInSeconds = now.diff(createTime, 'seconds')
-      const diffInMinutes = now.diff(createTime, 'minutes')
-      const diffInHours = now.diff(createTime, 'hours')
-      const diffInDays = now.diff(createTime, 'days')
-
-      if (diffInSeconds < 60) {
-        return '刚刚'
-      } else if (diffInMinutes < 60) {
-        return `${diffInMinutes} 分钟前`
-      } else if (diffInHours < 24) {
-        return `${diffInHours} 小时前`
-      } else if (diffInDays < 10) {
-        return `${diffInDays} 天前`
-      } else {
-        return createTime.format('YYYY-MM-DD')
-      }
+      return formattedTime(this.subject.createTime)
     }
   },
   methods: {

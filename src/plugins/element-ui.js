@@ -36,7 +36,9 @@ import {
   Collapse,
   CollapseItem,
   Divider,
-  Empty
+  Empty,
+  Link,
+  Switch
 } from 'element-ui'
 
 Vue.component(Header.name, Header)
@@ -73,6 +75,8 @@ Vue.component(Collapse.name, Collapse)
 Vue.component(CollapseItem.name, CollapseItem)
 Vue.component(Divider.name, Divider)
 Vue.component(Empty.name, Empty)
+Vue.component(Link.name, Link)
+Vue.component(Switch.name, Switch)
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.$loading = Loading.service

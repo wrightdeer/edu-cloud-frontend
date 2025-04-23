@@ -1,5 +1,6 @@
 <template>
-  <div>FolderListView</div>
+  <el-container>
+  </el-container>
 </template>
 
 <script>
