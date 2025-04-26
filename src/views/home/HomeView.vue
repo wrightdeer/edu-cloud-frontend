@@ -50,7 +50,7 @@
         <el-form-item label="图片验证码" prop="captcha">
           <el-input v-model="changePasswordForm.captcha" placeholder="请输入图片验证码">
             <template #append>
-              <img v-if="!isSendingEmailCaptcha" :src="captchaUrl" style="width: 60px; height: 20px;" @click="refreshCaptcha" alt="captcha" />
+              <img v-if="!isSendingEmailCaptcha" :src="'data:image/png;base64,' + imageBase64" style="width: 60px; height: 20px;" @click="refreshCaptcha" alt="captcha" />
               <el-button v-else type="info" @click="refreshCaptcha" style="width: 100px; height: 40px;">点击刷新</el-button>
             </template>
           </el-input>
@@ -80,7 +80,6 @@
 import { mapState, mapMutations } from 'vuex'
 import { removeToken } from '@/utils/storage'
 import request from '@/utils/request'
-import axios from 'axios'
 export default {
   data () {
     return {
@@ -119,7 +118,7 @@ export default {
         newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
         confirmPassword: [{ required: true, message: '请确认新密码', trigger: 'blur' }]
       },
-      captchaUrl: '/api/captcha',
+      imageBase64: '',
       isSendingEmailCaptcha: false,
       emailCaptchaCountdown: 0,
       captchaId: ''
@@ -154,21 +153,12 @@ export default {
       }
     },
     fetchCaptchaImage () {
-      axios.get('/api/user/captcha-image', { responseType: 'blob' })
-        .then(response => {
-          if (response.data.type === 'application/json') {
-            console.error('获取验证码图片失败')
-            this.captchaUrl = require('@/assets/imgs/captcha.png') // 使用本地静态图片代替
-          } else {
-            const url = window.URL.createObjectURL(new Blob([response.data]))
-            this.captchaUrl = url
-          }
-          this.captchaId = response.headers.cookie.split(';')[0]
-        })
-        .catch(error => {
-          console.error('获取验证码图片失败', error)
-          this.captchaUrl = require('@/assets/imgs/captcha.png') // 使用本地静态图片代替
-        })
+      request.get('/user/captcha-image').then(response => {
+        this.imageBase64 = response.data.imageBase64
+        this.captchaId = response.data.captchaId
+      }).catch(error => {
+        console.error('获取验证码图片失败', error)
+      })
     },
     refreshCaptcha () {
       this.fetchCaptchaImage()
