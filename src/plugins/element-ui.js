@@ -38,7 +38,10 @@ import {
   Divider,
   Empty,
   Link,
-  Switch
+  Switch,
+  Table,
+  TableColumn,
+  Tree
 } from 'element-ui'
 
 Vue.component(Header.name, Header)
@@ -77,6 +80,10 @@ Vue.component(Divider.name, Divider)
 Vue.component(Empty.name, Empty)
 Vue.component(Link.name, Link)
 Vue.component(Switch.name, Switch)
+Vue.component(Table.name, Table)
+Vue.component(TableColumn.name, TableColumn)
+Vue.component(Tree.name, Tree)
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
+Vue.prototype.$prompt = MessageBox.prompt
 Vue.prototype.$loading = Loading.service

@@ -111,7 +111,7 @@
         </el-form-item>
       </el-form>
     </el-aside>
-    <el-main>
+    <el-main style="padding: 0px;">
       <router-view></router-view>
     </el-main>
   </el-container>
@@ -124,7 +124,6 @@ import { formattedTime } from '@/utils/calcTime'
 export default {
   data () {
     return {
-      folderId: this.$route.params.folderId,
       isEditing: false,
       subjects: [],
       space: {}
@@ -185,17 +184,6 @@ export default {
         })
       this.isEditing = false
     },
-    goto (id) {
-      if (this.folderId !== id) {
-        this.popUntil(id)
-        this.$router.push({
-          name: 'folderList',
-          params: {
-            folderId: this.folderId
-          }
-        })
-      }
-    },
     handBack () {
       console.log(this.resolvedOriginRoute)
       if (this.resolvedOriginRoute) {
@@ -240,9 +228,9 @@ export default {
       this.folderId = this.space.rootFolderId
 
       this.$router.push({
-        name: 'FolderList',
-        params: {
-          folderId: this.folderId
+        name: 'FileList',
+        query: {
+          path: 'root:'
         }
       })
     }

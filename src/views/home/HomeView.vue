@@ -2,7 +2,6 @@
   <div>
     <el-header>
       <el-menu
-        :default-active="activeIndex2"
         class="el-menu-demo"
         mode="horizontal"
         background-color="#545c64"

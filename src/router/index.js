@@ -50,9 +50,9 @@ const routes = [
         meta: { requiresAuth: true, title: '空间详情' },
         children: [
           {
-            path: 'folderList/:folderId',
-            name: 'FolderList',
-            component: () => import('@/views/home/space/FolderListView.vue'),
+            path: 'fileList',
+            name: 'FileList',
+            component: () => import('@/views/home/space/FileListView.vue'),
             props: true,
             meta: { title: '文件夹列表' }
           },

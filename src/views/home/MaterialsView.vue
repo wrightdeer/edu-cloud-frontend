@@ -204,7 +204,8 @@ export default {
         subjectId: [
           { required: true, message: '请选择科目', trigger: 'change' }
         ]
-      }
+      },
+      createUserName: ''
     }
   },
   computed: {

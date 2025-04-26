@@ -10,7 +10,7 @@
             <el-form-item label="图片验证码" prop="captcha">
               <el-input v-model="verificationForm.captcha" placeholder="请输入图片验证码">
                 <template #append>
-                  <img v-if="!isSendingEmailCaptcha" :src="captchaUrl" style="width: 80px; height: 30px;" @click="refreshCaptcha" alt="captcha" />
+                  <img v-if="!isSendingEmailCaptcha" :src="'data:image/png;base64,' + imageBase64" style="width: 80px; height: 30px;" @click="refreshCaptcha" alt="captcha" />
                   <el-button v-else type="info" @click="refreshCaptcha" style="width: 100px; height: 40px;">点击刷新</el-button>
                 </template>
               </el-input>
@@ -46,7 +46,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import request from '@/utils/request'
 import { setToken } from '@/utils/storage'
 
@@ -72,10 +71,10 @@ export default {
         captcha: [{ required: true, message: '请输入图片验证码', trigger: 'blur' }],
         emailCaptcha: [{ required: true, message: '请输入邮箱验证码', trigger: 'blur' }]
       },
-      captchaUrl: '/api/captcha',
       isSendingEmailCaptcha: false,
       emailCaptchaCountdown: 0,
-      captchaId: ''
+      captchaId: '',
+      imageBase64: ''
     }
   },
   created () {
@@ -83,21 +82,12 @@ export default {
   },
   methods: {
     fetchCaptchaImage () {
-      axios.get('/api/user/captcha-image', { responseType: 'blob' })
-        .then(response => {
-          if (response.data.type === 'application/json') {
-            console.error('获取验证码图片失败')
-            this.captchaUrl = require('@/assets/imgs/captcha.png') // 使用本地静态图片代替
-          } else {
-            const url = window.URL.createObjectURL(new Blob([response.data]))
-            this.captchaUrl = url
-          }
-          this.captchaId = response.headers.cookie.split(';')[0]
-        })
-        .catch(error => {
-          console.error('获取验证码图片失败', error)
-          this.captchaUrl = require('@/assets/imgs/captcha.png') // 使用本地静态图片代替
-        })
+      request.get('/user/captcha-image').then(response => {
+        this.imageBase64 = response.data.imageBase64
+        this.captchaId = response.data.captchaId
+      }).catch(error => {
+        console.error('获取验证码图片失败', error)
+      })
     },
     refreshCaptcha () {
       this.fetchCaptchaImage()
@@ -142,7 +132,7 @@ export default {
             password: this.passwordForm.password
           })
             .then(response => {
-              setToken(response.token)
+              setToken(response.data.token)
               this.$router.push('/')
             })
             .catch(error => {
@@ -161,7 +151,7 @@ export default {
             emailCaptcha: this.verificationForm.emailCaptcha
           })
             .then(response => {
-              setToken(response.token)
+              setToken(response.data.token)
               this.$router.push('/')
             })
             .catch(error => {

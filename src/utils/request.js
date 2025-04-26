@@ -12,7 +12,7 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   config => {
-    config.url = `/api/${config.url}`
+    config.url = `/api${config.url}`
     const token = getToken()
     if (token) {
       config.headers.Authorization = token

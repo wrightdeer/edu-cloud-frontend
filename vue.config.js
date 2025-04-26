@@ -11,6 +11,13 @@ module.exports = defineConfig({
         pathRewrite: {
           '^/api': ''
         }
+      },
+      '/oss': {
+        target: 'https://web-lyt-tlias.oss-cn-beijing.aliyuncs.com/',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/oss': ''
+        }
       }
     }
   }
